@@ -1,26 +1,33 @@
-import { ChangeEvent, InputHTMLAttributes, useCallback } from "react";
-import { styled } from "styled-components";
+import {
+  ChangeEvent,
+  InputHTMLAttributes,
+  KeyboardEvent,
+  useCallback,
+} from "react";
+import { css, styled } from "styled-components";
 import { colors } from "../../styles/colors";
 import { changeExchangedValue } from "../../utils/changeExchangedValue";
 
 interface ExchangeInputProps extends InputHTMLAttributes<HTMLInputElement> {
   labelText?: string;
-  isError?: boolean;
+  isError: boolean;
   fromCoinName: string;
   toCoinName: string;
   exchangedType: "to" | "from";
+  otherExchanged: string;
   onChangeInput: ({
     fromCoin,
     toCoin,
   }: {
-    fromCoin: number;
-    toCoin: number;
+    fromCoin: string;
+    toCoin: string;
   }) => void;
 }
 
 interface InputStyle {
   inputwidth: number | string;
   inputheight: number | string;
+  iserror: number;
 }
 
 function ExchangeInput({
@@ -31,6 +38,7 @@ function ExchangeInput({
   fromCoinName,
   toCoinName,
   exchangedType,
+  otherExchanged,
   onChangeInput,
   ...rest
 }: ExchangeInputProps) {
@@ -38,18 +46,47 @@ function ExchangeInput({
 
   const handleChangeValue = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
+      let value = e.target.value;
+
+      if (isError) {
+        value = value.substring(1);
+      }
+      if (!value) {
+        onChangeInput({ fromCoin: "0", toCoin: "0" });
+        return;
+      }
+
+      if (!/^[0-9,.]+$/.test(value) || !/^[\d,]*\.?[\d]{0,10}$/.test(value)) {
+        return;
+      }
 
       changeExchangedValue({
         exchangedInfo: {
-          value: parseFloat(value.replaceAll(",", "")),
+          value: value.replaceAll(",", ""),
           exchangedType,
         },
         coinInfo: { fromCoinName, toCoinName },
         onChangeFn: onChangeInput,
       });
     },
-    [exchangedType, fromCoinName, onChangeInput, toCoinName]
+    [exchangedType, fromCoinName, isError, onChangeInput, toCoinName]
+  );
+
+  const handleRemoveComma = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.code === "Backspace") {
+        const [int, float] = e.currentTarget.value.split(".");
+        if (float?.length === 1) {
+          const coin = {
+            fromCoin:
+              exchangedType === "from" ? int : otherExchanged.split(".")[0],
+            toCoin: exchangedType === "to" ? int : otherExchanged.split(".")[0],
+          };
+          onChangeInput(coin);
+        }
+      }
+    },
+    [exchangedType, onChangeInput, otherExchanged]
   );
 
   return (
@@ -61,8 +98,10 @@ function ExchangeInput({
         inputwidth={width}
         inputheight={height}
         value={value?.toLocaleString("ko-KR")}
+        onKeyDown={handleRemoveComma}
         onChange={handleChangeValue}
         type="text"
+        iserror={isError ? 1 : 0}
       />
     </ExchangeInputContainer>
   );
@@ -97,7 +136,6 @@ const Input = styled.input<InputStyle>`
   height: ${(props) => props.inputheight || "56px"};
   background-color: ${colors.shade000};
   padding: 26px 16px 10px 14px;
-  border: none;
   border-radius: 12px;
   outline: none;
 

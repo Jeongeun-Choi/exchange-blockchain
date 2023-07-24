@@ -21,9 +21,10 @@ function ExchangedForm() {
     coinImg: "",
     coinCount: 1000,
   });
-  const [toExchanged, setToExchanged] = useState(100);
-  const [fromExchanged, setFromExchanged] = useState(1);
-
+  const [toExchanged, setToExchanged] = useState<string>("100");
+  const [fromExchanged, setFromExchanged] = useState<string>("1");
+  const [isErrorTo, setIsErrorTo] = useState<boolean>(false);
+  const [isErrorFrom, setIsErrorFrom] = useState<boolean>(false);
   const [toOpen, handleToToggle] = useToggle();
   const [fromOpen, handleFromToggle] = useToggle();
 
@@ -31,12 +32,19 @@ function ExchangedForm() {
     fromCoin,
     toCoin,
   }: {
-    fromCoin: number;
-    toCoin: number;
+    fromCoin: string;
+    toCoin: string;
   }) => {
     setToExchanged(toCoin);
     setFromExchanged(fromCoin);
   };
+
+  useEffect(() => {
+    if (toExchanged === "0" || fromExchanged === "0") {
+      setIsErrorFrom(true);
+      setIsErrorTo(true);
+    }
+  }, [toExchanged, fromExchanged]);
 
   useEffect(() => {
     changeExchangedValue({
@@ -66,9 +74,11 @@ function ExchangedForm() {
         <ExchangeInput
           labelText="전환 수량 (FROM)"
           value={fromExchanged}
+          otherExchanged={toExchanged}
           fromCoinName={fromCoin.coinName}
           toCoinName={toCoin.coinName}
           exchangedType="from"
+          isError={isErrorFrom}
           onChangeInput={handleChangeFromCoin}
         />
         <CoinDropdown
@@ -88,9 +98,11 @@ function ExchangedForm() {
         <ExchangeInput
           labelText="전환 수량 (TO)"
           value={toExchanged}
+          otherExchanged={fromExchanged}
           fromCoinName={fromCoin.coinName}
           toCoinName={toCoin.coinName}
           exchangedType="to"
+          isError={isErrorTo}
           onChangeInput={handleChangeFromCoin}
         />
         <CoinDropdown
