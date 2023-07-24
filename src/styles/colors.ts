@@ -1,5 +1,6 @@
 export const colors = {
   shade000: "#FAFBFC",
+  shade100: "#F4F5F8",
   shade200: "#E0E2E8",
   shade600: "#546182",
   shade700: "#404E71",
