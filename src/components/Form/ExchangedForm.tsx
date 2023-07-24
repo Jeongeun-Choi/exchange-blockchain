@@ -52,20 +52,24 @@ function ExchangedForm() {
       return;
     }
 
-    if (toCoin.coinCount < parseFloat(toExchanged)) {
+    const isMoreThanToCoinCount = toCoin.coinCount < parseFloat(toExchanged);
+    const isMoreThanFromCoinCount =
+      fromCoin.coinCount < parseFloat(fromExchanged);
+
+    if (isMoreThanToCoinCount) {
       setIsError((prev) => ({ ...prev, toCoin: true }));
+    } else {
+      setIsError((prev) => ({ ...prev, toCoin: false }));
     }
 
-    if (fromCoin.coinCount < parseFloat(fromExchanged)) {
+    if (isMoreThanFromCoinCount) {
       setIsError((prev) => ({
         ...prev,
         fromCoin: true,
       }));
       return;
-    }
-    if (toExchanged || fromExchanged) {
-      setIsError({ toCoin: false, fromCoin: false });
-      return;
+    } else {
+      setIsError((prev) => ({ ...prev, fromCoin: false }));
     }
   }, [toExchanged, fromExchanged, toCoin.coinCount, fromCoin.coinCount]);
 
