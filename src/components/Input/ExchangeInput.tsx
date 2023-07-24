@@ -48,7 +48,7 @@ function ExchangeInput({
     (e: ChangeEvent<HTMLInputElement>) => {
       let value = e.target.value;
 
-      if (isError) {
+      if (isError && value === "0") {
         value = value.substring(1);
       }
       if (!value) {
@@ -137,6 +137,16 @@ const Input = styled.input<InputStyle>`
   background-color: ${colors.shade000};
   padding: 26px 16px 10px 14px;
   border-radius: 12px;
+  ${(props) => {
+    if (props.iserror) {
+      return css`
+        border: 1px solid ${colors.error100};
+      `;
+    }
+    return css`
+      border: none;
+    `;
+  }}
   outline: none;
 
   font-size: 18px;

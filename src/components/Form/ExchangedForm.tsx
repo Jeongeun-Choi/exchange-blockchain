@@ -8,6 +8,11 @@ import { ExchangeInput } from "../Input";
 import { colors } from "../../styles/colors";
 import { changeExchangedValue } from "../../utils/changeExchangedValue";
 
+export interface IsError {
+  toCoin: boolean;
+  fromCoin: boolean;
+}
+
 function ExchangedForm() {
   const [toCoin, setToCoin] = useState<Coin>({
     coinName: "Solana",
@@ -23,8 +28,10 @@ function ExchangedForm() {
   });
   const [toExchanged, setToExchanged] = useState<string>("100");
   const [fromExchanged, setFromExchanged] = useState<string>("1");
-  const [isErrorTo, setIsErrorTo] = useState<boolean>(false);
-  const [isErrorFrom, setIsErrorFrom] = useState<boolean>(false);
+  const [isError, setIsError] = useState<IsError>({
+    toCoin: false,
+    fromCoin: false,
+  });
   const [toOpen, handleToToggle] = useToggle();
   const [fromOpen, handleFromToggle] = useToggle();
 
@@ -41,10 +48,26 @@ function ExchangedForm() {
 
   useEffect(() => {
     if (toExchanged === "0" || fromExchanged === "0") {
-      setIsErrorFrom(true);
-      setIsErrorTo(true);
+      setIsError({ toCoin: true, fromCoin: true });
+      return;
     }
-  }, [toExchanged, fromExchanged]);
+
+    if (toCoin.coinCount < parseFloat(toExchanged)) {
+      setIsError((prev) => ({ ...prev, toCoin: true }));
+    }
+
+    if (fromCoin.coinCount < parseFloat(fromExchanged)) {
+      setIsError((prev) => ({
+        ...prev,
+        fromCoin: true,
+      }));
+      return;
+    }
+    if (toExchanged || fromExchanged) {
+      setIsError({ toCoin: false, fromCoin: false });
+      return;
+    }
+  }, [toExchanged, fromExchanged, toCoin.coinCount, fromCoin.coinCount]);
 
   useEffect(() => {
     changeExchangedValue({
@@ -78,7 +101,7 @@ function ExchangedForm() {
           fromCoinName={fromCoin.coinName}
           toCoinName={toCoin.coinName}
           exchangedType="from"
-          isError={isErrorFrom}
+          isError={isError.fromCoin}
           onChangeInput={handleChangeFromCoin}
         />
         <CoinDropdown
@@ -102,7 +125,7 @@ function ExchangedForm() {
           fromCoinName={fromCoin.coinName}
           toCoinName={toCoin.coinName}
           exchangedType="to"
-          isError={isErrorTo}
+          isError={isError.toCoin}
           onChangeInput={handleChangeFromCoin}
         />
         <CoinDropdown
