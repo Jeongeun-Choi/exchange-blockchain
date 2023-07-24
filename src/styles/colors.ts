@@ -6,6 +6,7 @@ export const colors = {
   shade800: "#313C57",
   shade900: "#2A3249",
 
+  primary24: "#5D28F23D",
   primary100: "#5D28F2",
   primaryFont: "#5D28F2",
 
