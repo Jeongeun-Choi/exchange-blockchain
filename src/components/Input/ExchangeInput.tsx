@@ -57,7 +57,7 @@ function ExchangeInput({
         inputwidth={width}
         inputheight={height}
         onChange={handleChangeValue}
-        type="text"
+        type="number"
       />
     </ExchangeInputContainer>
   );
@@ -69,6 +69,12 @@ const ExchangeInputContainer = styled.div`
   display: inline-block;
   position: relative;
   overflow: hidden;
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 `;
 
 const LabelText = styled.span`
