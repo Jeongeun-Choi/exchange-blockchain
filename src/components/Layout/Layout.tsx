@@ -19,7 +19,7 @@ function Layout({ children }: PropsWithChildren) {
           <Button buttonType="text">거래내역</Button>
         </HeaderLeft>
       </Header>
-      {children}
+      <Main>{children}</Main>
     </LayoutContainer>
   );
 }
@@ -28,15 +28,23 @@ export default Layout;
 
 const LayoutContainer = styled.div`
   width: 100%;
+  height: 100vh;
   padding: 10px;
   box-sizing: border-box;
 `;
+
 const Header = styled.header`
   width: 100%;
   display: flex;
   justify-content: space-between;
 `;
 
+const Main = styled.main`
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Logo = styled.div`
   font-weight: bold;
   font-size: 26px;

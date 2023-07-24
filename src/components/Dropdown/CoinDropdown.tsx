@@ -28,25 +28,25 @@ function CoinDropdown({
           src={"http://localhost:3000/down_icon-icons.com_61209.png"}
           alt="사진"
         />
+        {open && (
+          <OptionContainer>
+            {coinList.map((coin) => (
+              <Option
+                key={coin.id}
+                disabled={disabledCoinIdList?.includes(coin.id) || false}
+              >
+                <Icon
+                  src={"http://localhost:3000/down_icon-icons.com_61209.png"}
+                  width="18px"
+                  height="18px"
+                  alt="사진"
+                />
+                <span>{coin.coinName}</span>
+              </Option>
+            ))}
+          </OptionContainer>
+        )}
       </SelectCotainer>
-      {open && (
-        <OptionContainer>
-          {coinList.map((coin) => (
-            <Option
-              key={coin.id}
-              disabled={disabledCoinIdList?.includes(coin.id) || false}
-            >
-              <Icon
-                src={"http://localhost:3000/down_icon-icons.com_61209.png"}
-                width="18px"
-                height="18px"
-                alt="사진"
-              />
-              <span>{coin.coinName}</span>
-            </Option>
-          ))}
-        </OptionContainer>
-      )}
     </>
   );
 }
@@ -60,8 +60,10 @@ const SelectCotainer = styled.div`
   border-radius: 12px;
   outline: none;
 
+  position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: ${colors.shade900};
   font-weight: 400;
   font-size: 14px;
@@ -85,6 +87,9 @@ const OptionContainer = styled.ul`
   outline: none;
   box-shadow: 0px 12px 16px 0px #00000026;
 
+  position: absolute;
+  top: 58px;
+  left: 0;
   margin-top: 4px;
   padding: 8px 10px 8px 10px;
   font-size: 14px;

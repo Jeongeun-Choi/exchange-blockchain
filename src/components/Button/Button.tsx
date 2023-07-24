@@ -34,7 +34,7 @@ const Button = styled.button<ButtonStyle>`
   color: ${(props) => props.color};
   border: none;
   border-radius: 12px;
-  padding: 10px, 16px, 10px, 16px;
+  padding: 10px 16px 10px 16px;
   font-size: 15px;
   font-weight: 600;
   line-height: 36px;

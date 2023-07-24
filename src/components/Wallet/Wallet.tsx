@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import WalletItem from "./WalletItem";
 
-interface Coin {
+export interface Coin {
   id: number;
   coinImg: string;
   coinName: string;
@@ -35,7 +35,6 @@ export default Wallet;
 
 const WalletContainer = styled.div`
   width: 308px;
-  height: 386px;
   border-radius: 12px;
   padding: 24px;
   background-color: #fafbfc;
