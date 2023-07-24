@@ -34,13 +34,17 @@ function ExchangeInput({
   onChangeInput,
   ...rest
 }: ExchangeInputProps) {
-  const { placeholder } = rest;
+  const { placeholder, value } = rest;
 
   const handleChangeValue = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = parseFloat(e.target.value);
+      const value = e.target.value;
+
       changeExchangedValue({
-        exchangedInfo: { value, exchangedType },
+        exchangedInfo: {
+          value: parseFloat(value.replaceAll(",", "")),
+          exchangedType,
+        },
         coinInfo: { fromCoinName, toCoinName },
         onChangeFn: onChangeInput,
       });
@@ -56,8 +60,9 @@ function ExchangeInput({
         placeholder={placeholder}
         inputwidth={width}
         inputheight={height}
+        value={value?.toLocaleString("ko-KR")}
         onChange={handleChangeValue}
-        type="number"
+        type="text"
       />
     </ExchangeInputContainer>
   );
