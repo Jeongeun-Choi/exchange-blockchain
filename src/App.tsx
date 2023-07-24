@@ -1,25 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { routes } from "./router/Router";
+import { Layout } from "./components/Layout";
+import { useEffect } from "react";
+
+const coinList = [
+  { coinName: "BnB", id: 1, coinImg: "", coinCount: 1000 },
+  { coinName: "Solana", id: 2, coinImg: "", coinCount: 1000 },
+  { coinName: "Ethereum", id: 3, coinImg: "", coinCount: 1000 },
+];
 
 function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      navigate("/exchanging");
+    }
+  }, [location.pathname, navigate]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      {routes.map((route) => (
+        <Route key={route.path} path={route.path} element={route.element} />
+      ))}
+    </Routes>
   );
 }
 
