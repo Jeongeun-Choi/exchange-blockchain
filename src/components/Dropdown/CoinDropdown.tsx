@@ -1,29 +1,57 @@
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
+import { Coin } from "../Wallet/Wallet";
+import { Dispatch, MouseEvent, SetStateAction } from "react";
 
 interface CoinDropdownProps {
   disabledCoinIdList?: number[];
-  defaultValue?: string;
+  coin?: Coin;
   open: boolean;
   onToggleDropdown: () => void;
+  changeCoin: Dispatch<SetStateAction<Coin>>;
 }
 
 const coinList = [
-  { coinName: "BnB", id: 1 },
-  { coinName: "Solana", id: 2 },
-  { coinName: "Ethereum", id: 3 },
+  { coinName: "BnB", id: 1, coinImg: "", coinCount: 1000 },
+  { coinName: "Solana", id: 2, coinImg: "", coinCount: 1000 },
+  { coinName: "Ethereum", id: 3, coinImg: "", coinCount: 1000 },
 ];
 
 function CoinDropdown({
-  defaultValue,
+  coin,
   disabledCoinIdList,
   open,
   onToggleDropdown,
+  changeCoin,
 }: CoinDropdownProps) {
+  const handleClickOption = (e: MouseEvent<HTMLLIElement>) => {
+    e.stopPropagation();
+
+    if (!e.currentTarget.dataset) {
+      return;
+    }
+
+    const { coinId } = e.currentTarget.dataset;
+
+    if (!coinId) {
+      return;
+    }
+
+    const choosenCoin = coinList.find(
+      (coin) => coin.id === parseInt(coinId, 10)
+    );
+
+    if (!choosenCoin) {
+      return;
+    }
+
+    changeCoin(choosenCoin);
+  };
+
   return (
     <>
       <SelectCotainer onClick={onToggleDropdown}>
-        <span>{defaultValue}</span>
+        <span>{coin?.coinName}</span>
         <Icon
           src={"http://localhost:3000/down_icon-icons.com_61209.png"}
           alt="사진"
@@ -34,6 +62,8 @@ function CoinDropdown({
               <Option
                 key={coin.id}
                 disabled={disabledCoinIdList?.includes(coin.id) || false}
+                data-coin-id={coin.id}
+                onClick={handleClickOption}
               >
                 <Icon
                   src={"http://localhost:3000/down_icon-icons.com_61209.png"}
@@ -96,6 +126,8 @@ const OptionContainer = styled.ul`
   font-weight: 400;
   line-height: 25px;
   letter-spacing: 0em;
+
+  z-index: 2;
 `;
 
 const Option = styled.li<{ disabled: boolean }>`
