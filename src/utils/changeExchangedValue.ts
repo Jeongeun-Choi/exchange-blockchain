@@ -16,12 +16,12 @@ interface CoinName {
 }
 
 interface CoinValue {
-  fromCoin: number;
-  toCoin: number;
+  fromCoin: string;
+  toCoin: string;
 }
 
 interface ExchangedInfo {
-  value: number;
+  value: string;
   exchangedType: "to" | "from";
 }
 interface Props {
@@ -30,19 +30,19 @@ interface Props {
   coinInfo: CoinName;
 }
 
+const parseFixedNum = (float: string, value: string) => {
+  return float === "" ? value.concat(".") : value;
+};
 export const changeExchangedValue = ({
   exchangedInfo,
   onChangeFn,
   coinInfo,
 }: Props) => {
-  const coin = { fromCoin: 0, toCoin: 0 };
+  const coin = { fromCoin: "0", toCoin: "0" };
   const { value, exchangedType } = exchangedInfo;
   const { toCoinName, fromCoinName } = coinInfo;
 
-  if (!value) {
-    onChangeFn(coin);
-    return;
-  }
+  const [int, float] = value.split(".");
   // 우선순위가 같으면 to, from 둘 다 같은 금액
   if (
     coinPriority[coinInfo.fromCoinName] === coinPriority[coinInfo.toCoinName]
@@ -59,16 +59,28 @@ export const changeExchangedValue = ({
     defaultCoinCount[fromCoinName] / defaultCoinCount[toCoinName];
   // 우선순위가 from이 to보다 더 크면 (숫자가 더 작으면)
   if (coinPriority[fromCoinName] < coinPriority[toCoinName]) {
-    coin.fromCoin = exchangedType === "from" ? value : value * divideRatio;
-    coin.toCoin = exchangedType === "to" ? value : value * multiRatio;
+    coin.fromCoin =
+      exchangedType === "from"
+        ? value
+        : parseFixedNum(float, (parseFloat(value) * divideRatio).toString());
+    coin.toCoin =
+      exchangedType === "to"
+        ? value
+        : parseFixedNum(float, (parseFloat(value) * multiRatio).toString());
 
     onChangeFn(coin);
     return;
   }
 
   // 우선순위가 from이 to보다 작으면 (숫자가 더 크면)
-  coin.fromCoin = exchangedType === "from" ? value : value * multiRatio;
-  coin.toCoin = exchangedType === "to" ? value : value * divideRatio;
+  coin.fromCoin =
+    exchangedType === "from"
+      ? value
+      : parseFixedNum(float, (parseFloat(value) * multiRatio).toString());
+  coin.toCoin =
+    exchangedType === "to"
+      ? value
+      : parseFixedNum(float, (parseFloat(value) * divideRatio).toString());
 
   onChangeFn(coin);
 };

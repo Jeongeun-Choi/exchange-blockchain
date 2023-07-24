@@ -46,30 +46,28 @@ function ExchangeInput({
 
   const handleChangeValue = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      let value = e.target.value;
-
+      let newValue = e.target.value;
       if (isError && value === "0") {
-        value = value.substring(1);
-      }
-      if (!value) {
-        onChangeInput({ fromCoin: "0", toCoin: "0" });
-        return;
+        newValue = newValue.substring(1);
       }
 
-      if (!/^[0-9,.]+$/.test(value) || !/^[\d,]*\.?[\d]{0,10}$/.test(value)) {
+      if (
+        !/^[0-9,.]+$/.test(newValue) ||
+        !/^[\d,]*\.?[\d]{0,10}$/.test(newValue)
+      ) {
         return;
       }
 
       changeExchangedValue({
         exchangedInfo: {
-          value: value.replaceAll(",", ""),
+          value: newValue.replaceAll(",", ""),
           exchangedType,
         },
         coinInfo: { fromCoinName, toCoinName },
         onChangeFn: onChangeInput,
       });
     },
-    [exchangedType, fromCoinName, isError, onChangeInput, toCoinName]
+    [exchangedType, fromCoinName, isError, onChangeInput, toCoinName, value]
   );
 
   const handleRemoveComma = useCallback(
@@ -77,11 +75,17 @@ function ExchangeInput({
       if (e.code === "Backspace") {
         const [int, float] = e.currentTarget.value.split(".");
         if (float?.length === 1) {
+          e.preventDefault();
           const coin = {
             fromCoin:
               exchangedType === "from" ? int : otherExchanged.split(".")[0],
             toCoin: exchangedType === "to" ? int : otherExchanged.split(".")[0],
           };
+          onChangeInput(coin);
+          return;
+        }
+        if (int.length === 1) {
+          const coin = { fromCoin: "0", toCoin: "0" };
           onChangeInput(coin);
         }
       }
