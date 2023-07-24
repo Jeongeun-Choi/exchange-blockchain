@@ -1,10 +1,21 @@
-import { InputHTMLAttributes } from "react";
+import { ChangeEvent, InputHTMLAttributes, useCallback } from "react";
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
+import { changeExchangedValue } from "../../utils/changeExchangedValue";
 
 interface ExchangeInputProps extends InputHTMLAttributes<HTMLInputElement> {
   labelText?: string;
   isError?: boolean;
+  fromCoinName: string;
+  toCoinName: string;
+  exchangedType: "to" | "from";
+  onChangeInput: ({
+    fromCoin,
+    toCoin,
+  }: {
+    fromCoin: number;
+    toCoin: number;
+  }) => void;
 }
 
 interface InputStyle {
@@ -17,9 +28,25 @@ function ExchangeInput({
   isError,
   width = "472px",
   height = "56px",
+  fromCoinName,
+  toCoinName,
+  exchangedType,
+  onChangeInput,
   ...rest
 }: ExchangeInputProps) {
   const { placeholder } = rest;
+
+  const handleChangeValue = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = parseFloat(e.target.value);
+      changeExchangedValue({
+        exchangedInfo: { value, exchangedType },
+        coinInfo: { fromCoinName, toCoinName },
+        onChangeFn: onChangeInput,
+      });
+    },
+    [exchangedType, fromCoinName, onChangeInput, toCoinName]
+  );
 
   return (
     <ExchangeInputContainer>
@@ -29,6 +56,8 @@ function ExchangeInput({
         placeholder={placeholder}
         inputwidth={width}
         inputheight={height}
+        onChange={handleChangeValue}
+        type="text"
       />
     </ExchangeInputContainer>
   );
