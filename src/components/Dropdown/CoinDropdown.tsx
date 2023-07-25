@@ -3,9 +3,9 @@ import { colors } from "../../styles/colors";
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { useWalletStore } from "../../store/useWalletStore";
 import { Coin } from "../../types/wallet";
+import { useCoinDropdownStore } from "../../store/useCoinDropdownStore";
 
 interface CoinDropdownProps {
-  disabledCoinIdList?: number[];
   coin?: Coin;
   open: boolean;
   onToggleDropdown: () => void;
@@ -14,12 +14,14 @@ interface CoinDropdownProps {
 
 function CoinDropdown({
   coin,
-  disabledCoinIdList,
   open,
   onToggleDropdown,
   changeCoin,
 }: CoinDropdownProps) {
   const coinList = useWalletStore((state) => state.walletList);
+  const { disabledCoinId, changeDisabledCoinId } = useCoinDropdownStore(
+    (state) => state
+  );
 
   const handleClickOption = (e: MouseEvent<HTMLLIElement>) => {
     e.stopPropagation();
@@ -43,6 +45,7 @@ function CoinDropdown({
     }
 
     changeCoin(choosenCoin);
+    changeDisabledCoinId(parseInt(coinId, 10));
   };
 
   return (
@@ -58,7 +61,7 @@ function CoinDropdown({
             {coinList.map((coin) => (
               <Option
                 key={coin.id}
-                disabled={disabledCoinIdList?.includes(coin.id) || false}
+                disabled={disabledCoinId === coin.id || false}
                 data-coin-id={coin.id}
                 onClick={handleClickOption}
               >

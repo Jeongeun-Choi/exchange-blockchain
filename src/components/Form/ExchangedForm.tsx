@@ -57,7 +57,6 @@ function ExchangedForm() {
     toCoin,
     toExchanged,
   ]);
-
   const handleChangeFromCoin = ({
     fromCoin,
     toCoin,
@@ -79,7 +78,6 @@ function ExchangedForm() {
       ...fromCoin,
       coinCount: parseFloat(fromExchanged),
     } as Coin;
-    console.log("?");
     if (resultFromCoin && resultToCoin) {
       editWallet(resultFromCoin, resultToCoin);
     }
