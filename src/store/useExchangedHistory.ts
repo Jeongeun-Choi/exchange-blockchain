@@ -12,6 +12,7 @@ interface ExchangedHistoryStore {
   lastExchangedHistory: ExchangedHistory | null;
   setLastExchangedHistory: (newHistory: ExchangedHistory) => void;
   addExchangedHistory: (newHistory: ExchangedHistory) => void;
+  sortExchangedHistory: () => void;
 }
 export const useExchangedHistory = create<ExchangedHistoryStore>((set) => ({
   exchangedHistoryList: [],
@@ -21,5 +22,9 @@ export const useExchangedHistory = create<ExchangedHistoryStore>((set) => ({
   addExchangedHistory: (newHistory) =>
     set((state) => ({
       exchangedHistoryList: [newHistory].concat(state.exchangedHistoryList),
+    })),
+  sortExchangedHistory: () =>
+    set((state) => ({
+      exchangedHistoryList: [...state.exchangedHistoryList].reverse(),
     })),
 }));
