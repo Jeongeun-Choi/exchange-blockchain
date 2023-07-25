@@ -48,7 +48,7 @@ function ExchangeInput({
     (e: ChangeEvent<HTMLInputElement>) => {
       let newValue = e.target.value;
       if (isError && value === "0") {
-        newValue = newValue.substring(1);
+        newValue = newValue.includes(".") ? newValue : newValue.substring(1);
       }
 
       if (
@@ -85,7 +85,7 @@ function ExchangeInput({
           return;
         }
         if (int.length === 1) {
-          const coin = { fromCoin: "0", toCoin: "0" };
+          const coin = { fromCoin: "", toCoin: "" };
           onChangeInput(coin);
         }
       }
