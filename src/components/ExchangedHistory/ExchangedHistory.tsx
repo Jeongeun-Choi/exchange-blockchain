@@ -13,19 +13,26 @@ function ExchangedHistory({ time, to, from }: ExchangedHistoryProps) {
     <Box>
       <Time>{dayjs(time).format("YYYY-MM-DD, A hh:mm")}</Time>
       <ExchangedInfo>
-        <span>
-          {from?.coinCount}
-          {from?.coinName.substring(0, 3)}
-        </span>
-        <Icon
-          src="http://localhost:3000/playsymbol_120625.png"
-          alt="오른쪽 화살표"
-        />
-
-        <span>
-          {to?.coinCount}
-          {to?.coinName.substring(0, 3)}
-        </span>
+        <CoinInfo>
+          <img
+            src={from?.coinImg}
+            alt={from?.coinName}
+            width={18}
+            height={18}
+          />
+          <span>
+            {from?.coinCount.toLocaleString("ko-KR")}
+            {from?.coinName.substring(0, 3)}
+          </span>
+        </CoinInfo>
+        <Icon>→</Icon>
+        <CoinInfo>
+          <img src={to?.coinImg} alt={to?.coinName} width={18} height={18} />
+          <span>
+            {to?.coinCount.toLocaleString("ko-KR")}
+            {to?.coinName.substring(0, 3)}
+          </span>
+        </CoinInfo>
       </ExchangedInfo>
     </Box>
   );
@@ -56,9 +63,23 @@ const ExchangedInfo = styled.div`
   font-size: 18px;
   font-weight: 600;
   line-height: 32px;
+
+  display: flex;
 `;
 
-const Icon = styled.img`
-  width: 14px;
-  height: 14px;
+const CoinInfo = styled.div`
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: 4px;
+  }
+`;
+
+const Icon = styled.div`
+  width: 16px;
+  height: 16px;
+  font-weight: bold;
+
+  margin: 0 6px;
 `;

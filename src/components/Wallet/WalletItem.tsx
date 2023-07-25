@@ -9,10 +9,10 @@ interface WalletItemProps {
 function WalletItem({ coinImg, coinName, coinCount }: WalletItemProps) {
   return (
     <WalletItemContainer>
-      <>
-        <img src={coinImg} alt={coinName} />
+      <ItemTitle>
+        <img src={coinImg} alt={coinName} width={16} height={16} />
         <span>{coinName}</span>
-      </>
+      </ItemTitle>
       <div>{coinCount}</div>
     </WalletItemContainer>
   );
@@ -24,4 +24,9 @@ const WalletItemContainer = styled.div`
   width: 260px;
   height: 77px;
   text-align: left;
+`;
+
+const ItemTitle = styled.div`
+  display: flex;
+  align-items: center;
 `;

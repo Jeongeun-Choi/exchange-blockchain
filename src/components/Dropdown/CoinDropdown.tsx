@@ -51,7 +51,17 @@ function CoinDropdown({
   return (
     <>
       <SelectCotainer onClick={onToggleDropdown}>
-        <span>{coin?.coinName || "선택하세요"}</span>
+        <Left>
+          {coin?.coinName && (
+            <img
+              src={coin?.coinImg}
+              alt={coin?.coinName}
+              width={18}
+              height={18}
+            />
+          )}
+          <span>{coin?.coinName || "선택하세요"}</span>
+        </Left>
         <Icon
           src={"http://localhost:3000/down_icon-icons.com_61209.png"}
           alt="사진"
@@ -66,10 +76,10 @@ function CoinDropdown({
                 onClick={handleClickOption}
               >
                 <Icon
-                  src={"http://localhost:3000/down_icon-icons.com_61209.png"}
-                  width="18px"
-                  height="18px"
-                  alt="사진"
+                  src={coin.coinImg}
+                  width={16}
+                  height={16}
+                  alt={coin.coinName}
                 />
                 <span>{coin.coinName}</span>
               </Option>
@@ -102,6 +112,15 @@ const SelectCotainer = styled.div`
   padding: 10px;
 
   appearance: none;
+`;
+
+const Left = styled.div`
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: 4px;
+  }
 `;
 
 const Icon = styled.img`
