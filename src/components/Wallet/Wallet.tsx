@@ -1,19 +1,14 @@
 import styled from "styled-components";
 import WalletItem from "./WalletItem";
-
-export interface Coin {
-  id: number;
-  coinImg: string;
-  coinName: string;
-  coinCount: number;
-}
+import { useWalletStore } from "../../store/useWalletStore";
 
 interface WalletProps {
   title: string;
-  walletList: Coin[];
 }
 
-function Wallet({ title, walletList }: WalletProps) {
+function Wallet({ title }: WalletProps) {
+  const walletList = useWalletStore((state) => state.walletList);
+
   return (
     <WalletContainer>
       <WalletTitle>{title}</WalletTitle>

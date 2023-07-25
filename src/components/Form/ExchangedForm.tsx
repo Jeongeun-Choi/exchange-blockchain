@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { Button } from "../Button";
-import { Coin } from "../Wallet/Wallet";
 import { useToggle } from "../../hooks/useToggle";
 import { CoinDropdown } from "../Dropdown";
 import { ExchangeInput } from "../Input";
 import { colors } from "../../styles/colors";
 import { changeExchangedValue } from "../../utils/changeExchangedValue";
+import { useWalletStore } from "../../store/useWalletStore";
+import { Coin } from "../../types/wallet";
 
 export interface IsError {
   toCoin: boolean;
@@ -14,19 +15,10 @@ export interface IsError {
 }
 
 function ExchangedForm() {
-  const [toCoin, setToCoin] = useState<Coin>({
-    coinName: "Solana",
-    id: 2,
-    coinImg: "",
-    coinCount: 1000,
-  });
-  const [fromCoin, setFromCoin] = useState<Coin>({
-    coinName: "Ethereum",
-    id: 3,
-    coinImg: "",
-    coinCount: 1000,
-  });
-  const [toExchanged, setToExchanged] = useState<string>("100");
+  const walletList = useWalletStore((state) => state.walletList);
+  const [toCoin, setToCoin] = useState<Coin>(walletList[0]);
+  const [fromCoin, setFromCoin] = useState<Coin>(walletList[1]);
+  const [toExchanged, setToExchanged] = useState<string>("1");
   const [fromExchanged, setFromExchanged] = useState<string>("1");
   const [isError, setIsError] = useState<IsError>({
     toCoin: false,
@@ -67,13 +59,13 @@ function ExchangedForm() {
         ...prev,
         fromCoin: true,
       }));
-      return;
     } else {
       setIsError((prev) => ({ ...prev, fromCoin: false }));
     }
   }, [toExchanged, fromExchanged, toCoin.coinCount, fromCoin.coinCount]);
 
   useEffect(() => {
+    // CoinDropdown으로 전환 코인을 변경시 해당 코인에 맞는 금액대로 전환한다.
     changeExchangedValue({
       exchangedInfo: { exchangedType: "to", value: toExchanged },
       coinInfo: {

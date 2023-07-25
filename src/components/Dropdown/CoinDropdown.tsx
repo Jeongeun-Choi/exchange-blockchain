@@ -1,7 +1,8 @@
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
-import { Coin } from "../Wallet/Wallet";
 import { Dispatch, MouseEvent, SetStateAction } from "react";
+import { useWalletStore } from "../../store/useWalletStore";
+import { Coin } from "../../types/wallet";
 
 interface CoinDropdownProps {
   disabledCoinIdList?: number[];
@@ -11,12 +12,6 @@ interface CoinDropdownProps {
   changeCoin: Dispatch<SetStateAction<Coin>>;
 }
 
-const coinList = [
-  { coinName: "BnB", id: 1, coinImg: "", coinCount: 1000 },
-  { coinName: "Solana", id: 2, coinImg: "", coinCount: 1000 },
-  { coinName: "Ethereum", id: 3, coinImg: "", coinCount: 1000 },
-];
-
 function CoinDropdown({
   coin,
   disabledCoinIdList,
@@ -24,6 +19,8 @@ function CoinDropdown({
   onToggleDropdown,
   changeCoin,
 }: CoinDropdownProps) {
+  const coinList = useWalletStore((state) => state.walletList);
+
   const handleClickOption = (e: MouseEvent<HTMLLIElement>) => {
     e.stopPropagation();
 
