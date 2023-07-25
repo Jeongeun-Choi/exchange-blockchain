@@ -47,6 +47,7 @@ const Title = styled.span`
   font-size: 22px;
   font-weight: 700;
   color: ${colors.shade700};
+  margin-bottom: 20px;
 `;
 
 const ExchangedContent = styled.form`
