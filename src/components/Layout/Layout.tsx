@@ -1,22 +1,42 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useEffect } from "react";
 import { Button } from "../Button";
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
+import { Link, useLocation } from "react-router-dom";
+import { routes } from "../../router/Router";
 
 function Layout({ children }: PropsWithChildren) {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/exchanging") {
+    }
+  }, []);
+
   return (
     <LayoutContainer>
       <Header>
         <Logo>alocados</Logo>
         <HeaderLeft>
-          <Button
-            buttonType="plain"
-            color={colors.primaryFont}
-            backgroundColor={colors.primary24}
-          >
-            환전하기
-          </Button>
-          <Button buttonType="text">거래내역</Button>
+          {routes.map((route) => (
+            <Link to={route.path}>
+              <Button
+                buttonType={location.pathname === route.path ? "plain" : "text"}
+                color={
+                  location.pathname === route.path
+                    ? colors.primaryFont
+                    : undefined
+                }
+                backgroundColor={
+                  location.pathname === route.path
+                    ? colors.primary24
+                    : undefined
+                }
+              >
+                {route.title}
+              </Button>
+            </Link>
+          ))}
         </HeaderLeft>
       </Header>
       <Main>{children}</Main>
