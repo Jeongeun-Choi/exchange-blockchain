@@ -3,15 +3,13 @@ import { Wallet } from "../components/Wallet";
 import { colors } from "../styles/colors";
 import { ExchangedHistory } from "../components/ExchangedHistory";
 import { ExchangedForm } from "../components/Form";
+import { useExchangedHistory } from "../store/useExchangedHistory";
 
-const coinList = [
-  { coinName: "BnB", id: 1, coinImg: "", coinCount: 1000 },
-  { coinName: "Solana", id: 2, coinImg: "", coinCount: 1000 },
-  { coinName: "Ethereum", id: 3, coinImg: "", coinCount: 1000 },
-  { coinName: "Ethereum", id: 3, coinImg: "", coinCount: 1000 },
-  { coinName: "Ethereum", id: 3, coinImg: "", coinCount: 1000 },
-];
 function ExchangingPage() {
+  const lastExchangedHistory = useExchangedHistory(
+    (state) => state.lastExchangedHistory
+  );
+
   return (
     <Container>
       <Title>환전하기</Title>
@@ -19,11 +17,13 @@ function ExchangingPage() {
         <Wallet title="지갑" />
         <ExchangedContent>
           <ExchangedForm />
-          <ExchangedHistory
-            time={new Date()}
-            // to={coinList[0]}
-            // from={coinList[1]}
-          />
+          {lastExchangedHistory && (
+            <ExchangedHistory
+              time={lastExchangedHistory.time}
+              to={lastExchangedHistory.to}
+              from={lastExchangedHistory.from}
+            />
+          )}
         </ExchangedContent>
       </Main>
     </Container>

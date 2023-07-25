@@ -8,6 +8,7 @@ import { colors } from "../../styles/colors";
 import { changeExchangedValue } from "../../utils/changeExchangedValue";
 import { useWalletStore } from "../../store/useWalletStore";
 import { Coin } from "../../types/wallet";
+import { useExchangedHistory } from "../../store/useExchangedHistory";
 
 export interface IsError {
   toCoin: boolean;
@@ -19,6 +20,9 @@ function ExchangedForm() {
     state.walletList,
     state.editWallet,
   ]);
+  const [addExchangedHistory, setLastExchangedHistory] = useExchangedHistory(
+    (state) => [state.addExchangedHistory, state.setLastExchangedHistory]
+  );
   const [toCoin, setToCoin] = useState<Coin | undefined>(undefined);
   const [fromCoin, setFromCoin] = useState<Coin | undefined>(undefined);
   const [toExchanged, setToExchanged] = useState<string>("");
@@ -80,6 +84,13 @@ function ExchangedForm() {
     } as Coin;
     if (resultFromCoin && resultToCoin) {
       editWallet(resultFromCoin, resultToCoin);
+      const newExchangedHistory = {
+        time: new Date(),
+        to: resultToCoin,
+        from: resultFromCoin,
+      };
+      setLastExchangedHistory(newExchangedHistory);
+      addExchangedHistory(newExchangedHistory);
     }
   };
 
