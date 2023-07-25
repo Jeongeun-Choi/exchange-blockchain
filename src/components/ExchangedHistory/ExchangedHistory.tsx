@@ -13,13 +13,19 @@ function ExchangedHistory({ time, to, from }: ExchangedHistoryProps) {
     <Box>
       <Time>{dayjs(time).format("YYYY-MM-DD, A hh:mm")}</Time>
       <ExchangedInfo>
-        <span>{from?.coinCount}</span>
+        <span>
+          {from?.coinCount}
+          {from?.coinName.substring(0, 3)}
+        </span>
         <Icon
           src="http://localhost:3000/playsymbol_120625.png"
           alt="오른쪽 화살표"
         />
 
-        <span>{to?.coinCount}</span>
+        <span>
+          {to?.coinCount}
+          {to?.coinName.substring(0, 3)}
+        </span>
       </ExchangedInfo>
     </Box>
   );
