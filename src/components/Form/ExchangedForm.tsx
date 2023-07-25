@@ -39,7 +39,12 @@ function ExchangedForm() {
       return true;
     }
 
-    if (!toExchanged || !fromExchanged) {
+    if (
+      !toExchanged ||
+      !fromExchanged ||
+      toExchanged === "0" ||
+      fromExchanged === "0"
+    ) {
       return true;
     }
 
@@ -150,6 +155,7 @@ function ExchangedForm() {
           exchangedType="from"
           isError={isError.fromCoin}
           onChangeInput={handleChangeFromCoin}
+          disabled={!fromCoin || !toCoin}
         />
         <CoinDropdown
           coin={fromCoin}
@@ -174,6 +180,7 @@ function ExchangedForm() {
           exchangedType="to"
           isError={isError.toCoin}
           onChangeInput={handleChangeFromCoin}
+          disabled={!fromCoin || !toCoin}
         />
         <CoinDropdown
           coin={toCoin}
