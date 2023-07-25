@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
-import { Coin } from "../Wallet/Wallet";
 import dayjs from "dayjs";
+import { Coin } from "../../types/wallet";
 
 interface ExchangedHistoryProps {
   time: Date;

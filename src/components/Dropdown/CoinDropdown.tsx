@@ -9,7 +9,7 @@ interface CoinDropdownProps {
   coin?: Coin;
   open: boolean;
   onToggleDropdown: () => void;
-  changeCoin: Dispatch<SetStateAction<Coin>>;
+  changeCoin: Dispatch<SetStateAction<Coin | undefined>>;
 }
 
 function CoinDropdown({
@@ -48,7 +48,7 @@ function CoinDropdown({
   return (
     <>
       <SelectCotainer onClick={onToggleDropdown}>
-        <span>{coin?.coinName}</span>
+        <span>{coin?.coinName || "선택하세요"}</span>
         <Icon
           src={"http://localhost:3000/down_icon-icons.com_61209.png"}
           alt="사진"

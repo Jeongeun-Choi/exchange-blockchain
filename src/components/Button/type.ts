@@ -16,4 +16,5 @@ export interface ButtonStyle {
   color?: string;
   backgroundcolor?: string;
   buttontype?: ButtonType;
+  disabled?: boolean;
 }
