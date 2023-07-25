@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { Button } from "../Button";
 import { useToggle } from "../../hooks/useToggle";
@@ -15,7 +15,10 @@ export interface IsError {
 }
 
 function ExchangedForm() {
-  const walletList = useWalletStore((state) => state.walletList);
+  const [walletList, editWallet] = useWalletStore((state) => [
+    state.walletList,
+    state.editWallet,
+  ]);
   const [toCoin, setToCoin] = useState<Coin>(walletList[0]);
   const [fromCoin, setFromCoin] = useState<Coin>(walletList[1]);
   const [toExchanged, setToExchanged] = useState<string>("1");
@@ -36,6 +39,17 @@ function ExchangedForm() {
   }) => {
     setToExchanged(toCoin);
     setFromExchanged(fromCoin);
+  };
+
+  const handleSubmit = (e: MouseEvent) => {
+    e.preventDefault();
+    const resultToCoin = { ...toCoin, coinCount: parseFloat(toExchanged) };
+    const resultFromCoin = {
+      ...fromCoin,
+      coinCount: parseFloat(fromExchanged),
+    };
+
+    editWallet(resultFromCoin, resultToCoin);
   };
 
   useEffect(() => {
@@ -135,6 +149,7 @@ function ExchangedForm() {
         buttonType="plain"
         backgroundColor={colors.primary100}
         color="#fff"
+        onClick={handleSubmit}
       >
         환전
       </CustomButton>
