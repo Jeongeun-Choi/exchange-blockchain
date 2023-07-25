@@ -1,6 +1,7 @@
 import { PropsWithChildren } from "react";
 import { ButtonProps, ButtonStyle } from "./type";
 import { css, styled } from "styled-components";
+import { colors } from "../../styles/colors";
 
 function PlainButton({
   children,
@@ -40,16 +41,18 @@ const Button = styled.button<ButtonStyle>`
   line-height: 36px;
   letter-spacing: 0.05em;
 
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   ${(props) => {
     switch (props.buttontype) {
       case "text":
         return css`
-          background-color: inherit;
+          background-color: ${props.disabled ? colors.shade200 : "inherit"};
         `;
       case "plain":
         return css`
-          background-color: ${props.backgroundcolor};
+          background-color: ${props.disabled
+            ? colors.shade200
+            : props.backgroundcolor};
         `;
       default:
         break;

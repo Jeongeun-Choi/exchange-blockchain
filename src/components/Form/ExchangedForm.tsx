@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Button } from "../Button";
 import { useToggle } from "../../hooks/useToggle";
@@ -19,16 +19,39 @@ function ExchangedForm() {
     state.walletList,
     state.editWallet,
   ]);
-  const [toCoin, setToCoin] = useState<Coin>(walletList[0]);
-  const [fromCoin, setFromCoin] = useState<Coin>(walletList[1]);
-  const [toExchanged, setToExchanged] = useState<string>("1");
-  const [fromExchanged, setFromExchanged] = useState<string>("1");
+  const [toCoin, setToCoin] = useState<Coin | undefined>(undefined);
+  const [fromCoin, setFromCoin] = useState<Coin | undefined>(undefined);
+  const [toExchanged, setToExchanged] = useState<string>("");
+  const [fromExchanged, setFromExchanged] = useState<string>("");
   const [isError, setIsError] = useState<IsError>({
     toCoin: false,
     fromCoin: false,
   });
   const [toOpen, handleToToggle] = useToggle();
   const [fromOpen, handleFromToggle] = useToggle();
+
+  const disabledButton = useMemo(() => {
+    if (!toCoin || !fromCoin) {
+      return true;
+    }
+
+    if (isError.fromCoin || isError.toCoin) {
+      return true;
+    }
+
+    if (!toExchanged || !fromExchanged) {
+      return true;
+    }
+
+    return false;
+  }, [
+    fromCoin,
+    fromExchanged,
+    isError.fromCoin,
+    isError.toCoin,
+    toCoin,
+    toExchanged,
+  ]);
 
   const handleChangeFromCoin = ({
     fromCoin,
@@ -43,18 +66,26 @@ function ExchangedForm() {
 
   const handleSubmit = (e: MouseEvent) => {
     e.preventDefault();
-    const resultToCoin = { ...toCoin, coinCount: parseFloat(toExchanged) };
+    const resultToCoin = {
+      ...toCoin,
+      coinCount: parseFloat(toExchanged),
+    } as Coin;
     const resultFromCoin = {
       ...fromCoin,
       coinCount: parseFloat(fromExchanged),
-    };
-
-    editWallet(resultFromCoin, resultToCoin);
+    } as Coin;
+    console.log("?");
+    if (resultFromCoin && resultToCoin) {
+      editWallet(resultFromCoin, resultToCoin);
+    }
   };
 
   useEffect(() => {
     if (toExchanged === "0" || fromExchanged === "0") {
       setIsError({ toCoin: true, fromCoin: true });
+      return;
+    }
+    if (!toCoin || !fromCoin) {
       return;
     }
 
@@ -76,10 +107,13 @@ function ExchangedForm() {
     } else {
       setIsError((prev) => ({ ...prev, fromCoin: false }));
     }
-  }, [toExchanged, fromExchanged, toCoin.coinCount, fromCoin.coinCount]);
+  }, [toExchanged, fromExchanged, toCoin, fromCoin]);
 
   useEffect(() => {
     // CoinDropdown으로 전환 코인을 변경시 해당 코인에 맞는 금액대로 전환한다.
+    if (!fromCoin || !toCoin) {
+      return;
+    }
     changeExchangedValue({
       exchangedInfo: { exchangedType: "to", value: toExchanged },
       coinInfo: {
@@ -88,9 +122,12 @@ function ExchangedForm() {
       },
       onChangeFn: handleChangeFromCoin,
     });
-  }, [toCoin.coinName]);
+  }, [toCoin?.coinName]);
 
   useEffect(() => {
+    if (!fromCoin || !toCoin) {
+      return;
+    }
     changeExchangedValue({
       exchangedInfo: { exchangedType: "from", value: fromExchanged },
       coinInfo: {
@@ -99,7 +136,7 @@ function ExchangedForm() {
       },
       onChangeFn: handleChangeFromCoin,
     });
-  }, [fromCoin.coinName]);
+  }, [fromCoin?.coinName]);
 
   return (
     <>
@@ -108,8 +145,8 @@ function ExchangedForm() {
           labelText="전환 수량 (FROM)"
           value={fromExchanged}
           otherExchanged={toExchanged}
-          fromCoinName={fromCoin.coinName}
-          toCoinName={toCoin.coinName}
+          fromCoinName={fromCoin?.coinName || ""}
+          toCoinName={toCoin?.coinName || ""}
           exchangedType="from"
           isError={isError.fromCoin}
           onChangeInput={handleChangeFromCoin}
@@ -132,8 +169,8 @@ function ExchangedForm() {
           labelText="전환 수량 (TO)"
           value={toExchanged}
           otherExchanged={fromExchanged}
-          fromCoinName={fromCoin.coinName}
-          toCoinName={toCoin.coinName}
+          fromCoinName={fromCoin?.coinName || ""}
+          toCoinName={toCoin?.coinName || ""}
           exchangedType="to"
           isError={isError.toCoin}
           onChangeInput={handleChangeFromCoin}
@@ -150,6 +187,7 @@ function ExchangedForm() {
         backgroundColor={colors.primary100}
         color="#fff"
         onClick={handleSubmit}
+        disabled={disabledButton}
       >
         환전
       </CustomButton>
