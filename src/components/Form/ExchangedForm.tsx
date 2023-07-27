@@ -242,7 +242,7 @@ function ExchangedForm() {
         />
       </InputContent>
       <img
-        src="http://localhost:3000/arrow_bidirectional_up_down_filled_icon_201017.png"
+        src="/icons/arrow_bidirectional_up_down_filled_icon_202609.svg"
         alt="양방향 화살표"
         width={40}
         height={40}

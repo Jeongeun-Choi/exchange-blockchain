@@ -59,10 +59,7 @@ function CoinDropdown({
           )}
           <span>{coin?.coinName || "선택하세요"}</span>
         </Left>
-        <Icon
-          src={"http://localhost:3000/down_icon-icons.com_61209.png"}
-          alt="사진"
-        />
+        <Icon src={"/icons/arrow-down_119013.svg"} alt="사진" />
         {open && (
           <OptionContainer>
             {coinList.map((coin) => (
