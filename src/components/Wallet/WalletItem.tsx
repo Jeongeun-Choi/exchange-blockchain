@@ -13,7 +13,7 @@ function WalletItem({ coinImg, coinName, coinCount }: WalletItemProps) {
         <img src={coinImg} alt={coinName} width={16} height={16} />
         <span>{coinName}</span>
       </ItemTitle>
-      <div>{coinCount}</div>
+      <div>{coinCount.toLocaleString("ko-KR")}</div>
     </WalletItemContainer>
   );
 }
