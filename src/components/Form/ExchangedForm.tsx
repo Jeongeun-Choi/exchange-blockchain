@@ -129,6 +129,9 @@ function ExchangedForm() {
       };
       setLastExchangedHistory(newExchangedHistory);
       addExchangedHistory(newExchangedHistory);
+
+      setToCoin(initExchangedCoin);
+      setFromCoin(initExchangedCoin);
     }
   };
 
