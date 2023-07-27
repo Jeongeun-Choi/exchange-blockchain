@@ -16,6 +16,7 @@ function Wallet({ title }: WalletProps) {
       <WalletContent>
         {walletList.map((coin) => (
           <WalletItem
+            key={coin.id}
             coinCount={coin.coinCount}
             coinImg={coin.coinImg}
             coinName={coin.coinName}

@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren } from "react";
 import { Button } from "../Button";
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
@@ -8,18 +8,13 @@ import { routes } from "../../router/Router";
 function Layout({ children }: PropsWithChildren) {
   const location = useLocation();
 
-  useEffect(() => {
-    if (location.pathname === "/exchanging") {
-    }
-  }, []);
-
   return (
     <LayoutContainer>
       <Header>
         <Logo>alocados</Logo>
         <HeaderLeft>
           {routes.map((route) => (
-            <Link to={route.path}>
+            <Link key={route.path} to={route.path}>
               <Button
                 buttonType={location.pathname === route.path ? "plain" : "text"}
                 color={
