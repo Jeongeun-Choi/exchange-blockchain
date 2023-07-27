@@ -108,13 +108,14 @@ function ExchangedForm() {
     e.preventDefault();
     const resultToCoin = {
       id: toCoin.id,
-      coinCount: parseFloat(toCoin.coinCount as string),
+      coinCount: Math.floor(parseFloat(toCoin.coinCount as string) * 100) / 100,
       coinName: toCoin.coinName,
       coinImg: toCoin.coinImg,
     };
     const resultFromCoin = {
       id: fromCoin.id,
-      coinCount: parseFloat(fromCoin.coinCount as string),
+      coinCount:
+        Math.floor(parseFloat(fromCoin.coinCount as string) * 100) / 100,
       coinName: fromCoin.coinName,
       coinImg: fromCoin.coinImg,
     };
