@@ -74,4 +74,8 @@ const HistoryFilter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  span:first-child {
+    cursor: pointer;
+  }
 `;
