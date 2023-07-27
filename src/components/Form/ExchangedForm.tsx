@@ -19,6 +19,11 @@ export interface ExchangedCoin extends Omit<Coin, "coinCount"> {
   coinCount: string | number;
 }
 
+interface DisabledCoinId {
+  fromCoinId: number;
+  toCoinId: number;
+}
+
 const initExchangedCoin = {
   id: 0,
   coinName: "",
@@ -31,6 +36,7 @@ function ExchangedForm() {
     state.walletList,
     state.editWallet,
   ]);
+
   const [addExchangedHistory, setLastExchangedHistory] = useExchangedHistory(
     (state) => [state.addExchangedHistory, state.setLastExchangedHistory]
   );
@@ -39,6 +45,10 @@ function ExchangedForm() {
   const [isError, setIsError] = useState<IsError>({
     toCoin: false,
     fromCoin: false,
+  });
+  const [disabledCoinId, setDisabledCoinId] = useState<DisabledCoinId>({
+    fromCoinId: 0,
+    toCoinId: 0,
   });
   const [toOpen, handleToToggle] = useToggle();
   const [fromOpen, handleFromToggle] = useToggle();
@@ -176,6 +186,13 @@ function ExchangedForm() {
       },
       onChangeFn: handleChangeFromCoin,
     });
+
+    if (disabledCoinId.toCoinId !== toCoin.id) {
+      setDisabledCoinId({
+        toCoinId: fromCoin.id || toCoin.id,
+        fromCoinId: toCoin.id,
+      });
+    }
   }, [toCoin?.coinName]);
 
   useEffect(() => {
@@ -193,6 +210,12 @@ function ExchangedForm() {
       },
       onChangeFn: handleChangeFromCoin,
     });
+    if (disabledCoinId.fromCoinId !== fromCoin.id) {
+      setDisabledCoinId({
+        fromCoinId: toCoin.id || fromCoin.id,
+        toCoinId: fromCoin.id,
+      });
+    }
   }, [fromCoin?.coinName]);
 
   return (
@@ -209,6 +232,7 @@ function ExchangedForm() {
         <CoinDropdown
           coin={fromCoin}
           open={fromOpen}
+          disabledCoinId={disabledCoinId.fromCoinId}
           onToggleDropdown={handleFromToggle}
           changeCoin={setFromCoin}
         />
@@ -231,6 +255,7 @@ function ExchangedForm() {
         <CoinDropdown
           coin={toCoin}
           open={toOpen}
+          disabledCoinId={disabledCoinId.toCoinId}
           onToggleDropdown={handleToToggle}
           changeCoin={setToCoin}
         />

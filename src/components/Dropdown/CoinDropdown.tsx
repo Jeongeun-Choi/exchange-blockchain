@@ -2,12 +2,12 @@ import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { useWalletStore } from "../../store/useWalletStore";
-import { useCoinDropdownStore } from "../../store/useCoinDropdownStore";
 import { ExchangedCoin } from "../Form/ExchangedForm";
 
 interface CoinDropdownProps {
   coin?: ExchangedCoin;
   open: boolean;
+  disabledCoinId: number;
   onToggleDropdown: () => void;
   changeCoin: Dispatch<SetStateAction<ExchangedCoin>>;
 }
@@ -15,13 +15,11 @@ interface CoinDropdownProps {
 function CoinDropdown({
   coin,
   open,
+  disabledCoinId,
   onToggleDropdown,
   changeCoin,
 }: CoinDropdownProps) {
   const coinList = useWalletStore((state) => state.walletList);
-  const { disabledCoinId, changeDisabledCoinId } = useCoinDropdownStore(
-    (state) => state
-  );
 
   const handleClickOption = (e: MouseEvent<HTMLLIElement>) => {
     e.stopPropagation();
@@ -45,7 +43,6 @@ function CoinDropdown({
     }
 
     changeCoin((prev) => ({ ...choosenCoin, coinCount: prev.coinCount }));
-    changeDisabledCoinId(parseInt(coinId, 10));
   };
 
   return (
@@ -157,7 +154,7 @@ const Option = styled.li<{ disabled: boolean }>`
   color: ${colors.shade900};
 
   opacity: ${(props) => props.disabled && 0.5};
-  cursor: pointer;
+  cursor: ${(props) => (!props.disabled ? "pointer" : "not-allowed")};
   span {
     margin-left: 4px;
   }
