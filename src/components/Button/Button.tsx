@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
-import { ButtonProps, ButtonStyle } from "./type";
 import { css, styled } from "styled-components";
 import { colors } from "../../styles/colors";
+import { ButtonProps, ButtonStyle } from "./types";
 
 function PlainButton({
   children,

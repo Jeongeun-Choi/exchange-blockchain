@@ -1,35 +1,8 @@
-import {
-  ChangeEvent,
-  InputHTMLAttributes,
-  KeyboardEvent,
-  useCallback,
-  useMemo,
-} from "react";
+import { ChangeEvent, KeyboardEvent, useCallback, useMemo } from "react";
 import { css, styled } from "styled-components";
 import { colors } from "../../styles/colors";
 import { changeExchangedValue } from "../../utils/changeExchangedValue";
-import { ExchangedCoin } from "../Form/ExchangedForm";
-
-interface ExchangeInputProps extends InputHTMLAttributes<HTMLInputElement> {
-  labelText?: string;
-  fromCoin: ExchangedCoin;
-  toCoin: ExchangedCoin;
-  isError: boolean;
-  exchangedType: "to" | "from";
-  onChangeInput: ({
-    fromCoin,
-    toCoin,
-  }: {
-    fromCoin: string;
-    toCoin: string;
-  }) => void;
-}
-
-interface InputStyle {
-  inputwidth: number | string;
-  inputheight: number | string;
-  iserror: number;
-}
+import { ExchangeInputProps, InputStyle } from "./types";
 
 function ExchangeInput({
   labelText,

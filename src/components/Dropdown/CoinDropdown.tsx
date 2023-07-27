@@ -1,17 +1,8 @@
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
-import { Dispatch, MouseEvent, SetStateAction } from "react";
+import { MouseEvent } from "react";
 import { useWalletStore } from "../../store/useWalletStore";
-import { ExchangedCoin } from "../Form/ExchangedForm";
-
-interface CoinDropdownProps {
-  coin?: ExchangedCoin;
-  open: boolean;
-  disabledCoinId: number;
-  dropdownType: string;
-  onToggleDropdown: (e: MouseEvent<HTMLDivElement>) => void;
-  changeCoin: Dispatch<SetStateAction<ExchangedCoin>>;
-}
+import { CoinDropdownProps } from "./types";
 
 function CoinDropdown({
   coin,

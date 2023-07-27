@@ -7,22 +7,8 @@ import { ExchangeInput } from "../Input";
 import { colors } from "../../styles/colors";
 import { changeExchangedValue } from "../../utils/changeExchangedValue";
 import { useWalletStore } from "../../store/useWalletStore";
-import { Coin } from "../../types/wallet";
 import { useExchangedHistory } from "../../store/useExchangedHistory";
-
-export interface IsError {
-  toCoin: boolean;
-  fromCoin: boolean;
-}
-
-export interface ExchangedCoin extends Omit<Coin, "coinCount"> {
-  coinCount: string | number;
-}
-
-interface DisabledCoinId {
-  fromCoinId: number;
-  toCoinId: number;
-}
+import { DisabledCoinId, ExchangedCoin, IsError } from "./types";
 
 const initExchangedCoin = {
   id: 0,

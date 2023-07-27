@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Coin } from "../types/wallet";
+import { Coin } from "../types/coin";
 
 interface WalletStore {
   walletList: Coin[];

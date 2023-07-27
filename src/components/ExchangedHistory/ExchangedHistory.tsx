@@ -1,13 +1,8 @@
 import { styled } from "styled-components";
-import { colors } from "../../styles/colors";
 import dayjs from "dayjs";
-import { Coin } from "../../types/wallet";
+import { colors } from "../../styles/colors";
+import { ExchangedHistoryProps } from "./types";
 
-interface ExchangedHistoryProps {
-  time: Date;
-  to?: Coin;
-  from?: Coin;
-}
 function ExchangedHistory({ time, to, from }: ExchangedHistoryProps) {
   return (
     <Box>
