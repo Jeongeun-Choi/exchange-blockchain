@@ -120,7 +120,7 @@ function ExchangeInput({
 
     // value가 실수라면 float에 .을 추가해준다.
     if ((value as string).includes(".")) {
-      float = ".".concat(float);
+      float = ".".concat(float.substring(0, 10)); // 소수점 아래 10자리까지 표기
     }
     return parseFloat(int.replaceAll(",", ""))
       .toLocaleString("ko-KR")
