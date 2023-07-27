@@ -50,6 +50,7 @@ function ExchangedForm() {
     fromCoinId: 0,
     toCoinId: 0,
   });
+  const [openType, setOpenType] = useState<string>("");
   const [toOpen, handleToToggle] = useToggle();
   const [fromOpen, handleFromToggle] = useToggle();
 
@@ -91,6 +92,36 @@ function ExchangedForm() {
     }
 
     return parseFloat(int.concat(float));
+  };
+
+  const handleOpenDropdown = (e: MouseEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.dataset) {
+      return;
+    }
+
+    const dropdownType = e.currentTarget.dataset.dropdownType;
+    if (!dropdownType) {
+      return;
+    }
+
+    // 같은 Dropdown을 클릭했으면 닫음
+    if (dropdownType === openType) {
+      setOpenType("");
+      return;
+    }
+
+    // to dropdown이 열려 있고 from dropdown을 클릭하면 to를 닫음
+    if (openType === "to") {
+      setOpenType("from");
+      return;
+    }
+
+    if (openType === "from") {
+      setOpenType("to");
+      return;
+    }
+
+    setOpenType(dropdownType);
   };
 
   const handleChangeFromCoin = ({
@@ -235,9 +266,10 @@ function ExchangedForm() {
         />
         <CoinDropdown
           coin={fromCoin}
-          open={fromOpen}
+          open={openType === "from"}
+          dropdownType="from"
           disabledCoinId={disabledCoinId.fromCoinId}
-          onToggleDropdown={handleFromToggle}
+          onToggleDropdown={handleOpenDropdown}
           changeCoin={setFromCoin}
         />
       </InputContent>
@@ -258,9 +290,10 @@ function ExchangedForm() {
         />
         <CoinDropdown
           coin={toCoin}
-          open={toOpen}
+          open={openType === "to"}
+          dropdownType="to"
           disabledCoinId={disabledCoinId.toCoinId}
-          onToggleDropdown={handleToToggle}
+          onToggleDropdown={handleOpenDropdown}
           changeCoin={setToCoin}
         />
       </InputContent>

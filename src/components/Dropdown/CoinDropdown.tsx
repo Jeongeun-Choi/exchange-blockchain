@@ -8,7 +8,8 @@ interface CoinDropdownProps {
   coin?: ExchangedCoin;
   open: boolean;
   disabledCoinId: number;
-  onToggleDropdown: () => void;
+  dropdownType: string;
+  onToggleDropdown: (e: MouseEvent<HTMLDivElement>) => void;
   changeCoin: Dispatch<SetStateAction<ExchangedCoin>>;
 }
 
@@ -16,6 +17,7 @@ function CoinDropdown({
   coin,
   open,
   disabledCoinId,
+  dropdownType,
   onToggleDropdown,
   changeCoin,
 }: CoinDropdownProps) {
@@ -47,7 +49,10 @@ function CoinDropdown({
 
   return (
     <>
-      <SelectCotainer onClick={onToggleDropdown}>
+      <SelectCotainer
+        data-dropdown-type={dropdownType}
+        onClick={onToggleDropdown}
+      >
         <Left>
           {coin?.coinName && (
             <img
