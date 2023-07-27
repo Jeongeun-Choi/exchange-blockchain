@@ -2,14 +2,14 @@ import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
 import { Dispatch, MouseEvent, SetStateAction } from "react";
 import { useWalletStore } from "../../store/useWalletStore";
-import { Coin } from "../../types/wallet";
 import { useCoinDropdownStore } from "../../store/useCoinDropdownStore";
+import { ExchangedCoin } from "../Form/ExchangedForm";
 
 interface CoinDropdownProps {
-  coin?: Coin;
+  coin?: ExchangedCoin;
   open: boolean;
   onToggleDropdown: () => void;
-  changeCoin: Dispatch<SetStateAction<Coin | undefined>>;
+  changeCoin: Dispatch<SetStateAction<ExchangedCoin>>;
 }
 
 function CoinDropdown({
@@ -44,7 +44,7 @@ function CoinDropdown({
       return;
     }
 
-    changeCoin(choosenCoin);
+    changeCoin((prev) => ({ ...choosenCoin, coinCount: prev.coinCount }));
     changeDisabledCoinId(parseInt(coinId, 10));
   };
 

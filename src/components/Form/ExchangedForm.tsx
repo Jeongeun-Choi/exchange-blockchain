@@ -15,6 +15,17 @@ export interface IsError {
   fromCoin: boolean;
 }
 
+export interface ExchangedCoin extends Omit<Coin, "coinCount"> {
+  coinCount: string | number;
+}
+
+const initExchangedCoin = {
+  id: 0,
+  coinName: "",
+  coinCount: "",
+  coinImg: "",
+};
+
 function ExchangedForm() {
   const [walletList, editWallet] = useWalletStore((state) => [
     state.walletList,
@@ -23,10 +34,8 @@ function ExchangedForm() {
   const [addExchangedHistory, setLastExchangedHistory] = useExchangedHistory(
     (state) => [state.addExchangedHistory, state.setLastExchangedHistory]
   );
-  const [toCoin, setToCoin] = useState<Coin | undefined>(undefined);
-  const [fromCoin, setFromCoin] = useState<Coin | undefined>(undefined);
-  const [toExchanged, setToExchanged] = useState<string>("");
-  const [fromExchanged, setFromExchanged] = useState<string>("");
+  const [toCoin, setToCoin] = useState<ExchangedCoin>(initExchangedCoin);
+  const [fromCoin, setFromCoin] = useState<ExchangedCoin>(initExchangedCoin);
   const [isError, setIsError] = useState<IsError>({
     toCoin: false,
     fromCoin: false,
@@ -35,7 +44,8 @@ function ExchangedForm() {
   const [fromOpen, handleFromToggle] = useToggle();
 
   const disabledButton = useMemo(() => {
-    if (!toCoin || !fromCoin) {
+    // 선택된 코인이 없을때
+    if (!toCoin.coinName || !fromCoin.coinName) {
       return true;
     }
 
@@ -44,23 +54,35 @@ function ExchangedForm() {
     }
 
     if (
-      !toExchanged ||
-      !fromExchanged ||
-      toExchanged === "0" ||
-      fromExchanged === "0"
+      !toCoin.coinCount ||
+      !fromCoin.coinCount ||
+      toCoin.coinCount === "0" ||
+      fromCoin.coinCount === "0"
     ) {
       return true;
     }
 
     return false;
   }, [
-    fromCoin,
-    fromExchanged,
+    fromCoin.coinCount,
+    fromCoin.coinName,
     isError.fromCoin,
     isError.toCoin,
-    toCoin,
-    toExchanged,
+    toCoin.coinCount,
+    toCoin.coinName,
   ]);
+
+  const stringToFloat = (coinCount: string) => {
+    let [int, float] = coinCount.split(".");
+    int = int.replaceAll(",", "");
+
+    if (float && coinCount.includes(".")) {
+      float = ".".concat(float);
+    }
+
+    return parseFloat(int.concat(float));
+  };
+
   const handleChangeFromCoin = ({
     fromCoin,
     toCoin,
@@ -68,20 +90,25 @@ function ExchangedForm() {
     fromCoin: string;
     toCoin: string;
   }) => {
-    setToExchanged(toCoin);
-    setFromExchanged(fromCoin);
+    setToCoin((prev) => ({ ...prev, coinCount: toCoin }));
+    setFromCoin((prev) => ({ ...prev, coinCount: fromCoin }));
   };
 
   const handleSubmit = (e: MouseEvent) => {
     e.preventDefault();
     const resultToCoin = {
-      ...toCoin,
-      coinCount: parseFloat(toExchanged),
-    } as Coin;
+      id: toCoin.id,
+      coinCount: parseFloat(toCoin.coinCount as string),
+      coinName: toCoin.coinName,
+      coinImg: toCoin.coinImg,
+    };
     const resultFromCoin = {
-      ...fromCoin,
-      coinCount: parseFloat(fromExchanged),
-    } as Coin;
+      id: fromCoin.id,
+      coinCount: parseFloat(fromCoin.coinCount as string),
+      coinName: fromCoin.coinName,
+      coinImg: fromCoin.coinImg,
+    };
+
     if (resultFromCoin && resultToCoin) {
       editWallet(resultFromCoin, resultToCoin);
       const newExchangedHistory = {
@@ -94,18 +121,31 @@ function ExchangedForm() {
     }
   };
 
+  /* 
+    환전 버튼 disabled 조건
+    - Input이 `error` 상태인 경우
+    - 코인 선택이 안 된 경우
+    - 입력된 값이 없는 경우
+  */
   useEffect(() => {
-    if (toExchanged === "0" || fromExchanged === "0") {
+    if (toCoin.coinCount === "0" || fromCoin.coinCount === "0") {
       setIsError({ toCoin: true, fromCoin: true });
       return;
     }
-    if (!toCoin || !fromCoin) {
+    if (!toCoin.coinName || !fromCoin.coinName) {
       return;
     }
 
-    const isMoreThanToCoinCount = toCoin.coinCount < parseFloat(toExchanged);
-    const isMoreThanFromCoinCount =
-      fromCoin.coinCount < parseFloat(fromExchanged);
+    const toExchanged = stringToFloat(toCoin.coinCount as string);
+    const FromExchanged = stringToFloat(fromCoin.coinCount as string);
+
+    const originalToCoin =
+      walletList.find((coin) => coin.id === toCoin.id)?.coinCount || 0;
+    const originalFromCoin =
+      walletList.find((coin) => coin.id === fromCoin.id)?.coinCount || 0;
+
+    const isMoreThanToCoinCount = originalToCoin < toExchanged;
+    const isMoreThanFromCoinCount = originalFromCoin < FromExchanged;
 
     if (isMoreThanToCoinCount) {
       setIsError((prev) => ({ ...prev, toCoin: true }));
@@ -121,7 +161,7 @@ function ExchangedForm() {
     } else {
       setIsError((prev) => ({ ...prev, fromCoin: false }));
     }
-  }, [toExchanged, fromExchanged, toCoin, fromCoin]);
+  }, [toCoin, fromCoin, walletList]);
 
   useEffect(() => {
     // CoinDropdown으로 전환 코인을 변경시 해당 코인에 맞는 금액대로 전환한다.
@@ -129,7 +169,7 @@ function ExchangedForm() {
       return;
     }
     changeExchangedValue({
-      exchangedInfo: { exchangedType: "to", value: toExchanged },
+      exchangedInfo: { exchangedType: "to", value: toCoin.coinCount as string },
       coinInfo: {
         fromCoinName: fromCoin.coinName,
         toCoinName: toCoin.coinName,
@@ -143,7 +183,10 @@ function ExchangedForm() {
       return;
     }
     changeExchangedValue({
-      exchangedInfo: { exchangedType: "from", value: fromExchanged },
+      exchangedInfo: {
+        exchangedType: "from",
+        value: fromCoin.coinCount as string,
+      },
       coinInfo: {
         fromCoinName: fromCoin.coinName,
         toCoinName: toCoin.coinName,
@@ -157,14 +200,11 @@ function ExchangedForm() {
       <InputContent>
         <ExchangeInput
           labelText="전환 수량 (FROM)"
-          value={fromExchanged}
-          otherExchanged={toExchanged}
-          fromCoinName={fromCoin?.coinName || ""}
-          toCoinName={toCoin?.coinName || ""}
+          fromCoin={fromCoin}
+          toCoin={toCoin}
           exchangedType="from"
           isError={isError.fromCoin}
           onChangeInput={handleChangeFromCoin}
-          disabled={!fromCoin || !toCoin}
         />
         <CoinDropdown
           coin={fromCoin}
@@ -182,14 +222,11 @@ function ExchangedForm() {
       <InputContent>
         <ExchangeInput
           labelText="전환 수량 (TO)"
-          value={toExchanged}
-          otherExchanged={fromExchanged}
-          fromCoinName={fromCoin?.coinName || ""}
-          toCoinName={toCoin?.coinName || ""}
+          toCoin={toCoin}
+          fromCoin={fromCoin}
           exchangedType="to"
           isError={isError.toCoin}
           onChangeInput={handleChangeFromCoin}
-          disabled={!fromCoin || !toCoin}
         />
         <CoinDropdown
           coin={toCoin}

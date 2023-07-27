@@ -1,9 +1,3 @@
-const coinPriority: { [key: string]: number } = {
-  Ethereum: 1,
-  BnB: 2,
-  Solana: 3,
-};
-
 const defaultCoinCount: { [key: string]: number } = {
   Ethereum: 1,
   BnB: 50,
@@ -30,6 +24,7 @@ interface Props {
   coinInfo: CoinName;
 }
 
+// value에 . 붙여주는 함수
 const parseFixedNum = (float: string, value: string) => {
   return float === "" && !value.includes(".") ? value.concat(".") : value;
 };
@@ -42,12 +37,11 @@ export const changeExchangedValue = ({
   const coin = { fromCoin: "0", toCoin: "0" };
   const { value, exchangedType } = exchangedInfo;
   const { toCoinName, fromCoinName } = coinInfo;
-
-  const float = value.split(".")[1];
-
   if (!value) {
     return;
   }
+
+  const float = value.split(".")[1];
 
   if (value === "0") {
     onChangeFn(coin);

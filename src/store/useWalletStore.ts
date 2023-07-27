@@ -24,7 +24,7 @@ const walletList = [
 
 export const useWalletStore = create<WalletStore>((set) => ({
   walletList,
-  editWallet: (fromCoin: Coin, toCoin: Coin) =>
+  editWallet: (fromCoin, toCoin: Coin) =>
     set((state) => {
       const newWalletList = state.walletList.map((wallet: Coin) => {
         if (wallet.id === fromCoin.id) {
