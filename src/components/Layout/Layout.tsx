@@ -3,7 +3,7 @@ import { Button } from "../Button";
 import { styled } from "styled-components";
 import { colors } from "../../styles/colors";
 import { Link, useLocation } from "react-router-dom";
-import { routes } from "../../router/Router";
+import { navRoutes } from "../../router/NavRouter";
 
 function Layout({ children }: PropsWithChildren) {
   const location = useLocation();
@@ -13,7 +13,7 @@ function Layout({ children }: PropsWithChildren) {
       <Header>
         <Logo>alocados</Logo>
         <HeaderLeft>
-          {routes.map((route) => (
+          {navRoutes.map((route) => (
             <Link key={route.path} to={route.path}>
               <Button
                 buttonType={location.pathname === route.path ? "plain" : "text"}

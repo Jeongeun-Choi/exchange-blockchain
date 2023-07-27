@@ -1,6 +1,6 @@
 import "./App.css";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import { routes } from "./router/Router";
+import { navRoutes } from "./router/NavRouter";
 import { Layout } from "./components/Layout";
 import { useEffect } from "react";
 
@@ -22,7 +22,7 @@ function App() {
 
   return (
     <Routes>
-      {routes.map((route) => (
+      {navRoutes.map((route) => (
         <Route key={route.path} path={route.path} element={route.element} />
       ))}
     </Routes>
