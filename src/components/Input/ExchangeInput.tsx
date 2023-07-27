@@ -3,6 +3,7 @@ import {
   InputHTMLAttributes,
   KeyboardEvent,
   useCallback,
+  useMemo,
 } from "react";
 import { css, styled } from "styled-components";
 import { colors } from "../../styles/colors";
@@ -52,8 +53,8 @@ function ExchangeInput({
       }
 
       if (
-        !/^[0-9,.]+$/.test(newValue) ||
-        !/^[\d,]*\.?[\d]{0,10}$/.test(newValue)
+        !/^[0-9,.]+$/.test(newValue) || // 숫자와 . 만 입력
+        !/^[\d,]*\.?[\d]{0,10}$/.test(newValue) // 10자리까지 입력
       ) {
         return;
       }
@@ -93,6 +94,22 @@ function ExchangeInput({
     [exchangedType, onChangeInput, otherExchanged]
   );
 
+  // 숫자 3자리마다 , 추가
+  const inputValue = useMemo(() => {
+    if (value === "") {
+      return "";
+    }
+    let [int, float] = (value as string).split(".");
+
+    // value가 실수라면 float에 .을 추가해준다.
+    if ((value as string).includes(".")) {
+      float = ".".concat(float);
+    }
+    return parseFloat(int.replaceAll(",", ""))
+      .toLocaleString("ko-KR")
+      .concat(float || "");
+  }, [value]);
+
   return (
     <ExchangeInputContainer>
       <LabelText>{labelText}</LabelText>
@@ -101,7 +118,7 @@ function ExchangeInput({
         placeholder={placeholder}
         inputwidth={width}
         inputheight={height}
-        value={value?.toLocaleString("ko-KR")}
+        value={inputValue}
         onKeyDown={handleRemoveComma}
         onChange={handleChangeValue}
         type="text"
