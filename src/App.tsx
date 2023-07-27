@@ -1,14 +1,7 @@
 import "./App.css";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { navRoutes } from "./router/NavRouter";
-import { Layout } from "./components/Layout";
 import { useEffect } from "react";
-
-const coinList = [
-  { coinName: "BnB", id: 1, coinImg: "", coinCount: 1000 },
-  { coinName: "Solana", id: 2, coinImg: "", coinCount: 1000 },
-  { coinName: "Ethereum", id: 3, coinImg: "", coinCount: 1000 },
-];
 
 function App() {
   const location = useLocation();
