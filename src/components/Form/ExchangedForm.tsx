@@ -1,7 +1,6 @@
 import { MouseEvent, useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Button } from "../Button";
-import { useToggle } from "../../hooks/useToggle";
 import { CoinDropdown } from "../Dropdown";
 import { ExchangeInput } from "../Input";
 import { colors } from "../../styles/colors";
@@ -37,37 +36,6 @@ function ExchangedForm() {
     toCoinId: 0,
   });
   const [openType, setOpenType] = useState<string>("");
-  const [toOpen, handleToToggle] = useToggle();
-  const [fromOpen, handleFromToggle] = useToggle();
-
-  const disabledButton = useMemo(() => {
-    // 선택된 코인이 없을때
-    if (!toCoin.coinName || !fromCoin.coinName) {
-      return true;
-    }
-
-    if (isError.fromCoin || isError.toCoin) {
-      return true;
-    }
-
-    if (
-      !toCoin.coinCount ||
-      !fromCoin.coinCount ||
-      toCoin.coinCount === "0" ||
-      fromCoin.coinCount === "0"
-    ) {
-      return true;
-    }
-
-    return false;
-  }, [
-    fromCoin.coinCount,
-    fromCoin.coinName,
-    isError.fromCoin,
-    isError.toCoin,
-    toCoin.coinCount,
-    toCoin.coinName,
-  ]);
 
   const stringToFloat = (coinCount: string) => {
     let [int, float] = coinCount.split(".");
@@ -238,6 +206,35 @@ function ExchangedForm() {
       });
     }
   }, [fromCoin?.coinName]);
+
+  const disabledButton = useMemo(() => {
+    // 선택된 코인이 없을때
+    if (!toCoin.coinName || !fromCoin.coinName) {
+      return true;
+    }
+
+    if (isError.fromCoin || isError.toCoin) {
+      return true;
+    }
+
+    if (
+      !toCoin.coinCount ||
+      !fromCoin.coinCount ||
+      toCoin.coinCount === "0" ||
+      fromCoin.coinCount === "0"
+    ) {
+      return true;
+    }
+
+    return false;
+  }, [
+    fromCoin.coinCount,
+    fromCoin.coinName,
+    isError.fromCoin,
+    isError.toCoin,
+    toCoin.coinCount,
+    toCoin.coinName,
+  ]);
 
   return (
     <>
